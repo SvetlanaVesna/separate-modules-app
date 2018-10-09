@@ -100,29 +100,29 @@ _Структура проектов на данном этапе являетс
 Для того, чобы приложение оставалось легковесным и модульным, все редьюсеры "монтируются" в стор "на лету", 
 то есть при переходе на конкретный урл в стор монтируется та часть стора, которая указана в дочернем модуле.
 Для этого организован так называемый реест редьюсеров - ReducerRegistry:
-        `
-         class ReducerRegistry {
-          constructor(initialReducers = {}) {
-            this._reducers = {...initialReducers};
-            this._emitChange = null
-          }
-          register(newReducers) {
-            this._reducers = {...this._reducers, ...newReducers};
-            if (this._emitChange != null) {
-              this._emitChange(this.getReducers())
-            }
-          }
-          getReducers() {
-            return {...this._reducers}
-          }
-          setChangeListener(listener) {
-            if (this._emitChange != null) {
-              throw new Error('Can only set the listener for a ReducerRegistry once.')
-            }
-            this._emitChange = listener
-          }
-        }
-        export default ReducerRegistry;`
+
+                  class ReducerRegistry {
+                   constructor(initialReducers = {}) {
+                     this._reducers = {...initialReducers};
+                     this._emitChange = null
+                   }
+                   register(newReducers) {
+                     this._reducers = {...this._reducers, ...newReducers};
+                     if (this._emitChange != null) {
+                       this._emitChange(this.getReducers())
+                     }
+                   }
+                   getReducers() {
+                     return {...this._reducers}
+                   }
+                   setChangeListener(listener) {
+                     if (this._emitChange != null) {
+                       throw new Error('Can only set the listener for a ReducerRegistry once.')
+                     }
+                     this._emitChange = listener
+                   }
+                 }
+                 export default ReducerRegistry;
         
 В момент, когда мы иницируем ванильный стор, мы указываем корневой редьюсер - общий для всех модулей. А так же устанавливаем  listener'а в случае,
  когда добавиться новый редьюсер.
