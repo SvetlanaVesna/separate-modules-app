@@ -1,16 +1,23 @@
-import { createStore } from 'redux-dynamic-reducer'
-import { applyMiddleware } from 'redux-subspace'
-import thunk from 'redux-thunk'
-import wormhole from 'redux-subspace-wormhole'
-import rootReducer from '../reducers/index'
+import {applyMiddleware, createStore} from 'redux';
+import thunkMiddleware from'redux-thunk';
+import createHistory from 'history/createBrowserHistory';
+import { routerMiddleware } from "react-router-redux";
 
-const configureStore = preloadedState => createStore(
-  rootReducer,
-  preloadedState,
-  applyMiddleware(
-    thunk,
-    wormhole((state) => state.routerReducer, 'routerReducer')
-  )
-);
+import configureReducers from '../reducers/configureReducers';
 
-export default configureStore
+export const history = createHistory();
+const createStoreWithMiddleware = applyMiddleware(thunkMiddleware, routerMiddleware(history))(createStore);
+
+export function configureStore(reducerRegistry) {
+  const rootReducer = configureReducers(reducerRegistry.getReducers());
+  const store = createStoreWithMiddleware(rootReducer);
+
+  // Reconfigure the store's reducer when the reducer registry is changed - we
+  // depend on this for loading reducers via code splitting and for hot
+  // reloading reducer modules.
+  reducerRegistry.setChangeListener((reducers) => {
+    store.replaceReducer(configureReducers(reducers))
+  });
+
+  return store
+}
