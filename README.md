@@ -1,4 +1,4 @@
-#SPA для прототипа кредитного конвеера
+#SPA для прототипа мульти-проекта, состоящего из нескольки react-redux приложений
 
 **Сборка**
 
@@ -30,7 +30,7 @@ _Пока все зависимости находятся в одном про�
 `packages`
 - папка с модулями
  
-    `calculator` проект для кредитного калькулятора
+    `calculator` проект для калькулятора
   
      `login` - проект для страницы авторизации
      
@@ -101,29 +101,29 @@ _Структура проектов на данном этапе являетс
 Для этого организован так называемый реест редьюсеров - ReducerRegistry:
 
 
-        `
-         class ReducerRegistry {
-          constructor(initialReducers = {}) {
-            this._reducers = {...initialReducers};
-            this._emitChange = null
-          }
-          register(newReducers) {
-            this._reducers = {...this._reducers, ...newReducers};
-            if (this._emitChange != null) {
-              this._emitChange(this.getReducers())
-            }
-          }
-          getReducers() {
-            return {...this._reducers}
-          }
-          setChangeListener(listener) {
-            if (this._emitChange != null) {
-              throw new Error('Can only set the listener for a ReducerRegistry once.')
-            }
-            this._emitChange = listener
-          }
-        }
-        export default ReducerRegistry;`
+        
+                  class ReducerRegistry {
+                   constructor(initialReducers = {}) {
+                     this._reducers = {...initialReducers};
+                     this._emitChange = null
+                   }
+                   register(newReducers) {
+                     this._reducers = {...this._reducers, ...newReducers};
+                     if (this._emitChange != null) {
+                       this._emitChange(this.getReducers())
+                     }
+                   }
+                   getReducers() {
+                     return {...this._reducers}
+                   }
+                   setChangeListener(listener) {
+                     if (this._emitChange != null) {
+                       throw new Error('Can only set the listener for a ReducerRegistry once.')
+                     }
+                     this._emitChange = listener
+                   }
+                 }
+                 export default ReducerRegistry;
         
 В момент, когда мы иницируем ванильный стор, мы указываем корневой редьюсер - общий для всех модулей. А так же устанавливаем  listener'а в случае,
  когда добавиться новый редьюсер.
